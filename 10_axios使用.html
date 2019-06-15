@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>axios使用</title>
+	</head>
+	<body>
+		<div id="app"></div>
+
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+		<script type="text/javascript" src="./node_modules/vue-router/dist/vue-router.js"></script>
+		<script type="text/javascript" src="./node_modules/axios/dist/axios.js"></script>
+
+		<script>
+			//App组件
+			var App = {
+				template: `
+				<div>
+					<p>响应1：{{res1}}</p>
+					<p>响应2：{{res2.data}}</p>
+					<button @click = 'fetchData'>发请求</button>
+					
+					<p>
+						上传进度：{{rate}}%
+						选择文件：
+						<input type="file" name = 'file' @change = 'changeHandler'/>
+						<button @click='sendAjax'>上传</button>
+						<button @click = 'cancel'>取消请求</button>
+						<button @click = 'resume'>续传</button>
+					</p>
+				</div>
+				`,
+				data() {
+					return {
+						res1: "",
+						res2: '',
+						file: {},
+						rate: 0
+					}
+				},
+				methods: {
+					fetchData() {
+						this.$axios.defaults.baseURL = 'http://localhost:8888/';
+
+						var q1 = this.$axios.get('');
+						var q2 = this.$axios.post('add', {
+							transformResponse: [function(data) {
+								// 对 data 进行任意转换处理
+								return {
+									data: [{
+										title: 'Foo',
+										desc: '000'
+									}, {
+										title: 'Boo',
+										desc: '222'
+									}]
+								};
+							}]
+						});
+
+						this.$axios.all([q1, q2]).then(this.$axios.spread((res1, res2) => {
+							// 全部成功
+							this.res1 = res1.data;
+							this.res2 = res2.data;
+
+							console.log(res1)
+							console.log(res2)
+						})).catch(err => {
+							// 其中一个失败
+							console.log(err);
+						})
+
+						this.$axios.get('/user?id=12345', {
+								transformResponse: [function(data) {
+									// 对 data 进行任意转换处理
+									// console.log(data);
+									// console.log(typeof data);
+									<!-- data = JSON.parse(data); -->
+									console.log(data);
+									return {
+										data: [{
+											title: 'Foo',
+											desc: '000'
+										}, {
+											title: 'Boo',
+											desc: '222'
+										}]
+									};
+								}]
+							}).then(function(response) {
+								console.log(response);
+							})
+							.catch(function(error) {
+								console.log(error);
+							});
+					},
+					sendAjax() {
+						this.$axios.defaults.baseURL = 'http://127.0.0.1:8888/';
+
+						var fd = new FormData();
+
+						fd.append('file', this.file);
+						this.$axios.post('upload', fd, {
+								onUploadProgress: (progressEvent) => {
+									// 对原生进度事件的处理
+									console.log(progressEvent);
+									var progress = (progressEvent.loaded / progressEvent.total) * 100;
+									console.log(progress);
+
+									this.$nextTick(function() {
+										this.rate = Math.ceil(progress);
+									})
+								}
+							})
+							.then(res => {
+								console.log(res);
+							})
+							.catch(err => {
+								console.log(err);
+							})
+					},
+					changeHandler(e) {
+						console.log(e.target.files[0]);
+						this.file = e.target.files[0];
+					},
+					cancel() {
+					    
+					},
+					resume() {
+						
+					}
+				},
+				created: function() {
+
+				},
+				mounted: function() {
+
+				}
+			}
+
+			Vue.prototype.$axios = axios;
+
+			//实例化vue
+			new Vue({
+				el: '#app',
+				template: `<App/>`,
+				data: () => ({
+
+				}),
+				//挂载组件
+				components: {
+					App
+				}
+			});
+		</script>
+	</body>
+</html>

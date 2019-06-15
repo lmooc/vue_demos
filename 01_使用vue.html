@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>vue</title>
+	</head>
+	<body>
+		<div id="app">
+			<h3>{{ msg }}</h3>
+		</div>
+
+		<!-- 1.引包 -->
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+
+		<script>
+			//2.创建实例化vue对象
+			new Vue({
+				el: '#app',
+				template: ``,
+				// data: function(){
+				// 	//声明数据
+				// 	return {
+				// 		msg: 'VUE'
+				// 	}
+				// },
+				data: () => ({
+					msg: 'VUE'
+				})
+			});
+		</script>
+	</body>
+</html>

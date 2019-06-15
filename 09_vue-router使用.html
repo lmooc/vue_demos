@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>路由</title>
+	</head>
+	<body>
+		<div id="app">
+			<p>
+				<!-- 使用 router-link 组件来导航. -->
+				<!-- 通过传入 `to` 属性指定链接. -->
+				<!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+				<router-link to="/foo">Foo</router-link>
+				<router-link to="/bar">Bar</router-link>
+			</p>
+			<!-- 路由出口 -->
+			<!-- 路由匹配到的组件将渲染在这里 -->
+			<router-view></router-view>
+		</div>
+
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+		<script type="text/javascript" src="./node_modules/vue-router/dist/vue-router.js"></script>
+
+		<script>
+			//使用路由
+			Vue.use(VueRouter);
+
+			//声明组件
+			const Foo = {
+				template: '<div>页面一</div>',
+				created(){
+					console.log(this.$route);
+				}
+			}
+			const Bar = {
+				template: '<div>页面二{{$route.params}}</div>',
+				data() {
+					return {
+
+					}
+				},
+				created() {
+					console.log(this.$router);
+					console.log(this.$route);
+				},
+				mounted: function() {
+					console.log(this.$route.params)
+				}
+			}
+
+			//创建路由对象
+			const router = new VueRouter({
+				//配置路由对象
+				routes: [
+					// 路由匹配的规则
+					{
+						// 会匹配所有路径
+						path: '*'
+					},
+					{
+						// 会匹配以 `/user-` 开头的任意路径
+						path: '/user-*'
+					},
+					{
+						path: '/foo',
+						name: 'foo',
+						component: Foo
+					},
+					{
+						path: '/bar/:userId',
+						name: 'bar',
+						component: Bar
+					}
+				]
+			});
+
+			//App组件
+			const App = {
+				template: `
+				<div class="nav">
+					<p>
+						<router-link :to="{name: 'foo', query: { id: 555}}">Foo</router-link>
+						<router-link :to="{name: 'bar', params: { userId: 123 } }">Bar</router-link>
+					</p>
+					<keep-alive>
+						<router-view></router-view>
+					</keep-alive>
+					
+				</div>
+				`
+			}
+			//实例化vue
+			const app = new Vue({
+				//配置路由
+				router: router,
+				template: `<App />`,
+				data: () => ({
+
+				}),
+				//挂载组件
+				components: {
+					App
+				}
+			}).$mount('#app');
+		</script>
+	</body>
+</html>

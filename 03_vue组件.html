@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>组件</title>
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+			}
+
+			.main {
+				width: 100%;
+			}
+
+			.default {
+				display: inline-block;
+				line-height: 1;
+				white-space: nowrap;
+				cursor: pointer;
+				background: #fff;
+				border: 1px solid #dcdfe6;
+				color: #606266;
+				-webkit-appearance: none;
+				text-align: center;
+				box-sizing: border-box;
+				outline: none;
+				margin: 0;
+				transition: .1s;
+				font-weight: 500;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				padding: 12px 20px;
+				font-size: 14px;
+				border-radius: 4px;
+			}
+
+			.primary {
+				color: #fff;
+				background-color: #409eff;
+				border-color: #409eff;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app"></div>
+
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+
+		<script>
+			//全局组件
+			Vue.component('VBtn', {
+				template: `
+					<button class = 'default' :class = 'type'>
+						<slot></slot>
+					</button>
+				`,
+				props: ['type']
+			});
+
+			//局部组件
+			var Header = {
+				template: `
+					<div class='head'>
+						头部组件
+						<VBtn>按钮01</VBtn>
+					</div>
+				`
+			};
+
+			//局部组件
+			var App = {
+				template: `
+				<div class="main">
+					<Header></Header>
+					<VBtn type = 'primary' @click.native = 'add'>按钮02</VBtn>
+				</div>
+				`,
+				data() {
+					return {
+
+					}
+				},
+				components: {
+					Header
+				},
+				methods: {
+					add() {
+						alert('点击');
+					}
+				}
+			}
+			//实例化vue
+			new Vue({
+				el: '#app',
+				template: `<App></App>`,
+				data: () => ({
+					msg: 'VUE'
+				}),
+				//挂载组件
+				components: {
+					App
+				}
+			});
+		</script>
+	</body>
+</html>

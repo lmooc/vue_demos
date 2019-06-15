@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>watch</title>
+	</head>
+	<body>
+		<div id="app"></div>
+		
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+		
+		<script>
+			//局部组件
+			var App  = {
+				template: `
+				<div class="main">
+					<input type="text" name="" v-model = 'msg'>
+					<h3>{{msg}}</h3>
+					<h2>{{msg2[0].name}}</h2>
+					<button @click = 'msg2[0].name = "Jack"'>点击</button>
+				</div>
+				`,
+				props:['contents'],
+				data(){
+					return {
+						msg: 'hello',
+						msg2:[{name:'Tom'}]
+					}
+				},
+				methods: {
+					
+				},
+				watch: {
+					msg: function(newV, oldV){
+						console.log(newV, oldV)
+					},
+					msg2: {
+						deep: true,
+						handler: function(newV,oldV) {
+							console.log(newV[0].name)
+						}
+					}
+				}
+			}
+			//实例化vue
+			new Vue({
+				el: '#app',
+				template: `<App :contents = 'contents'></App>`,
+				data: () => ({
+					contents:[
+						{id:1,title:"vue",content:'渐进式JavaScript 框架'},
+						{id:2,title:"angular",content:'Angular 是一个开发平台。它能帮你更轻松的构建 Web 应用。Angular 集声明式模板、依赖注入、端到端工具和一些最佳实践于一身，为你解决开发方面的各种挑战。Angular 为开发者提升构建 Web、手机或桌面应用的能力。'},
+						{id:3,title:"react",content:'用于构建用户界面的 JavaScript 库'}
+					]
+				}),
+				//挂载组件
+				components: {
+					App
+				}
+			});
+		</script>
+	</body>
+</html>

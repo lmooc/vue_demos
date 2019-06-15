@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>组件间通信</title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			.main{
+				width: 100%;
+			}
+			ul {
+			  list-style-type: none;
+			  padding: 0;
+			}
+			li {
+			  display: inline-block;
+			  margin: 0 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app"></div>
+		
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+		
+		<script>
+			/**
+			 * 父组件向子组件传值
+			 * 1.在父组件中  先绑定  :自定义的属性名 = posts
+			 * 2.子要声明 props:['自定义的属性名']  来接收
+			 */
+			
+			/**
+			 * 子组件向父组件
+			 * 1.触发父组件 中声明的自定义事件   vue $emit()
+			 */
+			
+			//全局组件
+			Vue.component('VBtn', {
+				template:`
+					<button>全局组件按钮</button>
+				`
+			});
+			
+			//局部组件
+			var Header  = {
+				template:`
+					<div class='head'>
+						头部组件
+						<VBtn></VBtn>
+						{{msg}}
+						<button @click = 'changeFontSize'>字体变大</button>
+					</div>
+				`,
+				props: ['msg'],
+				methods: {
+					changeFontSize(){
+						this.$emit('change')
+					}
+				}
+			};
+			
+			//局部组件
+			var App  = {
+				template: `
+				<div class="main" :style = '{fontSize:postFontSize+"em"}'>
+					<Header :msg = 'msg' @change = 'changeHandler'></Header>
+					<ul>
+						<li v-for = "(item, index) in contents">
+							<h3>{{item.title}}</h3>
+							<h4>{{item.content}}</h4>
+						</li>
+					</ul>
+				</div>
+				`,
+				props:['contents'],
+				data(){
+					return {
+						msg: "测试数据",
+						postFontSize:1
+					}
+				},
+				methods: {
+					changeHandler(){
+						this.postFontSize+=.1;
+					}
+				},
+				components: {
+					Header
+				}
+			}
+			//实例化vue
+			new Vue({
+				el: '#app',
+				template: `<App :contents = 'contents'></App>`,
+				data: () => ({
+					contents:[
+						{id:1,title:"vue",content:'渐进式JavaScript 框架'},
+						{id:2,title:"angular",content:'Angular 是一个开发平台。它能帮你更轻松的构建 Web 应用。Angular 集声明式模板、依赖注入、端到端工具和一些最佳实践于一身，为你解决开发方面的各种挑战。Angular 为开发者提升构建 Web、手机或桌面应用的能力。'},
+						{id:3,title:"react",content:'用于构建用户界面的 JavaScript 库'}
+					]
+				}),
+				//挂载组件
+				components: {
+					App
+				}
+			});
+		</script>
+	</body>
+</html>

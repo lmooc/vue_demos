@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>v-for使用</title>
+	</head>
+	<body>
+		<div id="app"></div>
+
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+		<script type="text/javascript" src="./node_modules/vue-router/dist/vue-router.js"></script>
+		<script src="https://cdn.bootcss.com/lodash.js/4.17.12-pre/lodash.js"></script>
+
+		<script>
+			Vue.component('My-Com', {
+				template: `
+				<div>
+					<ul>
+						<li>
+							<h3>{{obj.id}}</h3>
+							<h3>{{obj.text}}</h3>
+						</li>
+					</ul>
+					<input type="text" placeholder = '请输入你的名字' />
+				</div>
+				`,
+				props: {
+					obj: Object
+				},
+			})
+			//App组件
+			var App = {
+				template: `
+				<div>
+					<button @click = 'change'>改变顺序</button>
+					<My-Com v-for = '(item,index) in todos' :obj = 'item' :key = 'item.id'></My-Com>
+				</div>
+				`,
+				data() {
+					return {
+						todos: [{
+								id: 1,
+								text: '学习 JavaScript'
+							},
+							{
+								id: 2,
+								text: '学习 Vue'
+							},
+							{
+								id: 3,
+								text: '整个牛项目'
+							}
+						]
+					}
+				},
+				methods: {
+					change: function() {
+						this.todos = _.shuffle(this.todos);
+					}
+				},
+				created: function() {
+
+				},
+				mounted: function() {
+
+				}
+			}
+
+			//实例化vue
+			new Vue({
+				el: '#app',
+				template: `<App></App>`,
+				data: () => ({
+
+				}),
+				//挂载组件
+				components: {
+					App
+				}
+			});
+		</script>
+	</body>
+</html>
